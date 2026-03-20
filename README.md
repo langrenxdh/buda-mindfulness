@@ -1,36 +1,101 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Buda · 禅房
 
-## Getting Started
+A digital zen room for mindfulness practice — 觉察·转念·布施
 
-First, run the development server:
+Single-viewport, no-scroll, pure HTML/CSS/JS. Opens directly in any browser.
+
+---
+
+## What It Is
+
+A contemplative single-page app that serves as a digital 禅房 (zen room):
+
+- **Buddha silhouette** — CSS/SVG with slow breathing animation, emerging from void
+- **Drifting wisdom cards** — glassmorphism carousel of mindfulness quotes
+- **Break reminders** — Web Notifications at configurable intervals (15/30/45/60 min)
+- **Optional LLM** — bring your own Anthropic API key for dynamic 觉察 prompts via Claude Sonnet
+- **30+ curated prompts** — local fallback pool, no API needed
+
+---
+
+## Quick Start
 
 ```bash
-npm run dev
+# Just open it
+open index.html
 # or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+python3 -m http.server 8000
+# then visit http://localhost:8000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+No build step. No npm install. No framework.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Features
 
-## Learn More
+**Visual Design**
+- Color palette: void blacks, misty darks, golden incense glow
+- Typography: Noto Serif SC (Chinese) + Cormorant Garamond (English) — contemplative serif
+- Glassmorphism cards with varied opacity/size/float speed
+- Subtle bokeh particle system, incense smoke wisps
+- Staggered fade-in animations on load
 
-To learn more about Next.js, take a look at the following resources:
+**Carousel**
+- 7 cards with seamless infinite horizontal drift
+- Hover to pause
+- Edge-fade masks for ethereal appearance
+- Each card has unique float animation timing
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+**Break Reminders**
+- Toggle on/off with minimal switch control
+- Interval options: 15, 30, 45, or 60 minutes
+- Uses Web Notifications API (requests permission on enable)
+- In-app toast fallback for when notifications aren't available
+- First preview notification 3 seconds after enabling
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+**LLM Integration**
+- Settings modal (gear icon) to enter Anthropic API key
+- Key stored ONLY in localStorage — never sent anywhere except api.anthropic.com
+- Calls Claude Sonnet for dynamic mindfulness reminders
+- Graceful fallback to local prompt pool when no key or API error
+- Agent prompt tuned for 觉察-转念-布施 practice
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Card Content
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Default drifting cards:
+- 色即是空，空即是色 — 心经
+- 应无所住而生其心 — 金刚经
+- Observe your thoughts like clouds passing
+- 呼吸，觉察，放下
+- What you resist, persists. What you observe, dissolves.
+- 此刻，你在想什么？
+- 一切有为法，如梦幻泡影 — 金刚经
+
+---
+
+## Technical Details
+
+| | |
+|---|---|
+| **Stack** | Pure HTML + CSS + Vanilla JS |
+| **File** | Single `index.html` (≈1100 lines) |
+| **Fonts** | Google Fonts (Noto Serif SC, Cormorant Garamond) |
+| **APIs** | Web Notifications, Anthropic Messages API |
+| **Storage** | localStorage only |
+| **Deploy** | Any static host (GitHub Pages, Vercel, Netlify, S3) |
+
+---
+
+## Responsive
+
+- **Desktop**: Centered, generous whitespace, wide cards
+- **Mobile**: Smaller cards, compact controls, touch-friendly
+
+---
+
+## License
+
+MIT

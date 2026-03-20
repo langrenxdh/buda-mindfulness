@@ -1,0 +1,95 @@
+{
+  "metadata": {
+    "title": "Buda - Daily Zen Wisdom",
+    "description": "A zen-inspired collection of Buddhist wisdom, mindfulness quotes, dharma teachings, and daily practice reminders."
+  },
+  "header": {
+    "subtitle": "Daily Wisdom & Mindfulness"
+  },
+  "search": {
+    "placeholder": "Search wisdom..."
+  },
+  "categories": {
+    "all": "All",
+    "wisdom": "Wisdom",
+    "mindfulness": "Mindfulness",
+    "dharma": "Dharma",
+    "practice": "Practice"
+  },
+  "empty": {
+    "title": "No wisdom found for that search.",
+    "hint": "Try a different term or clear the search."
+  },
+  "footer": {
+    "text": "Cultivated with mindfulness"
+  },
+  "language": {
+    "select": "Language",
+    "en": "English",
+    "zh": "中文",
+    "es": "Español",
+    "ja": "日本語"
+  },
+  "messages": {
+    "1": {
+      "content": "The mind is everything. What you think you become.",
+      "source": "Buddha"
+    },
+    "2": {
+      "content": "Do not dwell in the past, do not dream of the future, concentrate the mind on the present moment.",
+      "source": "Buddha"
+    },
+    "3": {
+      "content": "Peace comes from within. Do not seek it without.",
+      "source": "Buddha"
+    },
+    "4": {
+      "content": "The root of suffering is attachment.",
+      "source": "Buddha"
+    },
+    "5": {
+      "content": "In the beginner's mind there are many possibilities, but in the expert's mind there are few.",
+      "source": "Shunryu Suzuki"
+    },
+    "6": {
+      "content": "Before enlightenment, chop wood, carry water. After enlightenment, chop wood, carry water.",
+      "source": "Zen Proverb"
+    },
+    "7": {
+      "content": "When you realize there is nothing lacking, the whole world belongs to you.",
+      "source": "Lao Tzu"
+    },
+    "8": {
+      "content": "Wherever you are, be there totally.",
+      "source": "Eckhart Tolle"
+    },
+    "9": {
+      "content": "The present moment is the only moment available to us, and it is the door to all moments.",
+      "source": "Thich Nhat Hanh"
+    },
+    "10": {
+      "content": "If you understand, things are just as they are. If you do not understand, things are just as they are.",
+      "source": "Zen Proverb"
+    },
+    "11": {
+      "content": "Smile, breathe, and go slowly.",
+      "source": "Thich Nhat Hanh"
+    },
+    "12": {
+      "content": "To study Buddhism is to study the self. To study the self is to forget the self.",
+      "source": "Dogen"
+    },
+    "13": {
+      "content": "The obstacle is the path.",
+      "source": "Zen Proverb"
+    },
+    "14": {
+      "content": "He who knows, does not speak. He who speaks, does not know.",
+      "source": "Lao Tzu"
+    },
+    "15": {
+      "content": "You cannot travel the path until you have become the path itself.",
+      "source": "Buddha"
+    }
+  }
+}

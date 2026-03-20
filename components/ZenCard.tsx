@@ -1,11 +1,13 @@
 "use client";
 
 import { motion, type Variants } from "framer-motion";
+import { useTranslations } from "next-intl";
 import { ZenMessage } from "@/lib/types";
 
 interface ZenCardProps {
   message: ZenMessage;
   index: number;
+  locale: string;
 }
 
 const categoryStyles: Record<
@@ -34,16 +36,9 @@ const categoryStyles: Record<
   },
 };
 
-const categoryLabels: Record<ZenMessage["category"], string> = {
-  wisdom: "Wisdom",
-  mindfulness: "Mindfulness",
-  dharma: "Dharma",
-  practice: "Practice",
-};
-
-function formatDate(isoString: string): string {
+function formatDate(isoString: string, locale: string): string {
   const date = new Date(isoString);
-  return date.toLocaleDateString("en-US", {
+  return date.toLocaleDateString(locale, {
     month: "short",
     day: "numeric",
     year: "numeric",
@@ -63,7 +58,8 @@ const cardVariants: Variants = {
   }),
 };
 
-export default function ZenCard({ message, index }: ZenCardProps) {
+export default function ZenCard({ message, index, locale }: ZenCardProps) {
+  const t = useTranslations("categories");
   const styles = categoryStyles[message.category];
 
   return (
@@ -81,9 +77,11 @@ export default function ZenCard({ message, index }: ZenCardProps) {
         <span
           className={`text-xs font-medium px-2.5 py-1 rounded-full ${styles.badge}`}
         >
-          {categoryLabels[message.category]}
+          {t(message.category)}
         </span>
-        <span className="text-xs text-[#6B7A6C]">{formatDate(message.timestamp)}</span>
+        <span className="text-xs text-[#6B7A6C]">
+          {formatDate(message.timestamp, locale)}
+        </span>
       </div>
 
       {/* Quote */}

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useTranslations } from "next-intl";
 import { Search } from "lucide-react";
 
 interface SearchBarProps {
@@ -8,6 +9,7 @@ interface SearchBarProps {
 }
 
 export default function SearchBar({ onSearch }: SearchBarProps) {
+  const t = useTranslations("search");
   const [value, setValue] = useState("");
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -32,7 +34,7 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
         type="text"
         value={value}
         onChange={(e) => setValue(e.target.value)}
-        placeholder="Search wisdom..."
+        placeholder={t("placeholder")}
         className="w-full pl-11 pr-4 py-3 rounded-full border border-[#e2dbd4] bg-white text-[#2D3A2E] placeholder-[#6B7A6C] text-sm focus:outline-none focus:ring-2 focus:ring-[#8B9A7D] focus:border-transparent transition-all duration-200 shadow-sm"
       />
     </div>

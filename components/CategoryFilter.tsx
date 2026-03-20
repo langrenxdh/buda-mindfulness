@@ -1,22 +1,23 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ZenMessage } from "@/lib/types";
+import { useTranslations } from "next-intl";
+import { Category } from "@/lib/types";
 
-type Category = ZenMessage["category"] | "all";
+type FilterCategory = Category | "all";
 
 interface CategoryFilterProps {
-  selected: Category;
-  onSelect: (category: Category) => void;
-  counts: Record<Category, number>;
+  selected: FilterCategory;
+  onSelect: (category: FilterCategory) => void;
+  counts: Record<FilterCategory, number>;
 }
 
-const categories: { value: Category; label: string }[] = [
-  { value: "all", label: "All" },
-  { value: "wisdom", label: "Wisdom" },
-  { value: "mindfulness", label: "Mindfulness" },
-  { value: "dharma", label: "Dharma" },
-  { value: "practice", label: "Practice" },
+const CATEGORY_KEYS: FilterCategory[] = [
+  "all",
+  "wisdom",
+  "mindfulness",
+  "dharma",
+  "practice",
 ];
 
 export default function CategoryFilter({
@@ -24,9 +25,11 @@ export default function CategoryFilter({
   onSelect,
   counts,
 }: CategoryFilterProps) {
+  const t = useTranslations("categories");
+
   return (
     <div className="flex flex-wrap gap-2 justify-center">
-      {categories.map(({ value, label }) => {
+      {CATEGORY_KEYS.map((value) => {
         const isActive = selected === value;
         const count = counts[value] ?? 0;
 
@@ -41,7 +44,7 @@ export default function CategoryFilter({
                 : "bg-transparent text-[#6B7A6C] border-[#8B9A7D]/40 hover:border-[#8B9A7D] hover:text-[#4a5e3a]"
             }`}
           >
-            <span>{label}</span>
+            <span>{t(value)}</span>
             <span
               className={`ml-1.5 inline-flex items-center justify-center text-xs rounded-full w-5 h-5 ${
                 isActive

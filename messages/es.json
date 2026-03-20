@@ -1,0 +1,95 @@
+{
+  "metadata": {
+    "title": "Buda - Sabiduría Zen Diaria",
+    "description": "Una colección de inspiración zen con sabiduría budista, citas de atención plena, enseñanzas del dharma y recordatorios de práctica diaria."
+  },
+  "header": {
+    "subtitle": "Sabiduría y Atención Plena Diaria"
+  },
+  "search": {
+    "placeholder": "Buscar sabiduría..."
+  },
+  "categories": {
+    "all": "Todo",
+    "wisdom": "Sabiduría",
+    "mindfulness": "Atención Plena",
+    "dharma": "Dharma",
+    "practice": "Práctica"
+  },
+  "empty": {
+    "title": "No se encontró sabiduría para esa búsqueda.",
+    "hint": "Prueba un término diferente o borra la búsqueda."
+  },
+  "footer": {
+    "text": "Cultivado con atención plena"
+  },
+  "language": {
+    "select": "Idioma",
+    "en": "English",
+    "zh": "中文",
+    "es": "Español",
+    "ja": "日本語"
+  },
+  "messages": {
+    "1": {
+      "content": "La mente lo es todo. En lo que piensas, te conviertes.",
+      "source": "Buda"
+    },
+    "2": {
+      "content": "No te quedes en el pasado, no sueñes con el futuro, concentra la mente en el momento presente.",
+      "source": "Buda"
+    },
+    "3": {
+      "content": "La paz viene de dentro. No la busques fuera.",
+      "source": "Buda"
+    },
+    "4": {
+      "content": "La raíz del sufrimiento es el apego.",
+      "source": "Buda"
+    },
+    "5": {
+      "content": "En la mente del principiante hay muchas posibilidades, pero en la mente del experto hay pocas.",
+      "source": "Shunryu Suzuki"
+    },
+    "6": {
+      "content": "Antes de la iluminación, corta leña, acarrea agua. Después de la iluminación, corta leña, acarrea agua.",
+      "source": "Proverbio Zen"
+    },
+    "7": {
+      "content": "Cuando te das cuenta de que nada falta, el mundo entero te pertenece.",
+      "source": "Lao Tzu"
+    },
+    "8": {
+      "content": "Dondequiera que estés, está ahí totalmente.",
+      "source": "Eckhart Tolle"
+    },
+    "9": {
+      "content": "El momento presente es el único momento disponible para nosotros, y es la puerta a todos los momentos.",
+      "source": "Thich Nhat Hanh"
+    },
+    "10": {
+      "content": "Si entiendes, las cosas son tal como son. Si no entiendes, las cosas son tal como son.",
+      "source": "Proverbio Zen"
+    },
+    "11": {
+      "content": "Sonríe, respira y ve despacio.",
+      "source": "Thich Nhat Hanh"
+    },
+    "12": {
+      "content": "Estudiar el budismo es estudiar el yo. Estudiar el yo es olvidar el yo.",
+      "source": "Dogen"
+    },
+    "13": {
+      "content": "El obstáculo es el camino.",
+      "source": "Proverbio Zen"
+    },
+    "14": {
+      "content": "El que sabe, no habla. El que habla, no sabe.",
+      "source": "Lao Tzu"
+    },
+    "15": {
+      "content": "No puedes recorrer el camino hasta que te hayas convertido en el camino mismo.",
+      "source": "Buda"
+    }
+  }
+}
