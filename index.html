@@ -1,0 +1,2217 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Buda · 禅房</title>
+<meta name="description" content="A digital zen room for mindfulness practice — 觉察·转念·布施">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%2280%22 font-size=%2280%22>🪷</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Noto+Serif+SC:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --void: #0a0a0c;
+  --void-deep: #050507;
+  --mist: #1a1a1f;
+  --mist-light: #2a2a32;
+  --incense: #c9a84c;
+  --incense-dim: rgba(201, 168, 76, 0.3);
+  --incense-glow: rgba(201, 168, 76, 0.08);
+  --lotus-gold: #b8976a;
+  --smoke: rgba(255, 255, 255, 0.06);
+  --smoke-text: rgba(255, 255, 255, 0.55);
+  --smoke-faint: rgba(255, 255, 255, 0.03);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-bg: rgba(255, 255, 255, 0.04);
+  --font-cn: 'Noto Serif SC', 'LXGW WenKai', serif;
+  --font-en: 'Cormorant Garamond', 'Georgia', serif;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: var(--void);
+  color: var(--smoke-text);
+  font-family: var(--font-cn);
+}
+
+/* === BACKGROUND ATMOSPHERE === */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background:
+    radial-gradient(ellipse 80% 50% at 50% 40%, rgba(201, 168, 76, 0.03) 0%, transparent 70%),
+    radial-gradient(ellipse 60% 80% at 30% 60%, rgba(100, 100, 120, 0.04) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 60% at 70% 30%, rgba(80, 80, 100, 0.03) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Mist particles */
+body::after {
+  content: '';
+  position: fixed;
+  top: 0; left: 0;
+  width: 200%; height: 200%;
+  background-image:
+    radial-gradient(1px 1px at 10% 20%, rgba(255,255,255,0.015), transparent),
+    radial-gradient(1px 1px at 30% 60%, rgba(255,255,255,0.01), transparent),
+    radial-gradient(1px 1px at 50% 40%, rgba(255,255,255,0.012), transparent),
+    radial-gradient(1px 1px at 70% 80%, rgba(255,255,255,0.008), transparent),
+    radial-gradient(1px 1px at 90% 10%, rgba(255,255,255,0.01), transparent);
+  animation: mistDrift 60s linear infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+
+@keyframes mistDrift {
+  0% { transform: translate(0, 0); }
+  100% { transform: translate(-50%, -25%); }
+}
+
+/* === MAIN LAYOUT === */
+#zen-room {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+  opacity: 0;
+  animation: roomFadeIn 3s ease-out 0.5s forwards;
+}
+
+@keyframes roomFadeIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+/* === BUDDHA VISUAL === */
+#buddha-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: -2vh;
+  margin-bottom: 1.5vh;
+}
+
+#buddha-svg {
+  width: clamp(100px, 18vmin, 180px);
+  height: auto;
+  animation: buddhaBreathing 6s ease-in-out infinite;
+  filter: drop-shadow(0 0 30px rgba(201, 168, 76, 0.08));
+}
+
+@keyframes buddhaBreathing {
+  0%, 100% { opacity: 0.3; transform: scale(1); filter: drop-shadow(0 0 30px rgba(201, 168, 76, 0.06)); }
+  50% { opacity: 0.6; transform: scale(1.02); filter: drop-shadow(0 0 50px rgba(201, 168, 76, 0.12)); }
+}
+
+/* Incense smoke wisps */
+.incense-wisp {
+  position: absolute;
+  bottom: 10%;
+  width: 2px;
+  height: 60px;
+  opacity: 0;
+  animation: wisps 8s ease-in-out infinite;
+}
+
+.incense-wisp::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 1px;
+  height: 100%;
+  background: linear-gradient(to top, var(--incense-dim), transparent);
+  filter: blur(2px);
+}
+
+.incense-wisp:nth-child(2) { left: 48%; animation-delay: 2s; }
+.incense-wisp:nth-child(3) { left: 52%; animation-delay: 4s; }
+
+@keyframes wisps {
+  0% { opacity: 0; transform: translateY(0) scaleY(0.5); }
+  30% { opacity: 0.4; }
+  70% { opacity: 0.2; }
+  100% { opacity: 0; transform: translateY(-40px) scaleY(1.2) translateX(5px); }
+}
+
+/* Title under Buddha */
+#zen-title {
+  font-family: var(--font-cn);
+  font-size: clamp(1.2rem, 2.5vmin, 1.6rem);
+  font-weight: 300;
+  letter-spacing: 0.3em;
+  color: rgba(255, 255, 255, 0.2);
+  margin-top: 1vh;
+  text-align: center;
+  animation: titleFade 4s ease-out 2s forwards;
+  opacity: 0;
+}
+
+@keyframes titleFade {
+  0% { opacity: 0; letter-spacing: 1em; }
+  100% { opacity: 1; letter-spacing: 0.5em; }
+}
+
+/* === CAROUSEL === */
+#carousel-area {
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+  padding: 2vh 0;
+  flex-shrink: 0;
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
+  mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
+}
+
+#carousel-track {
+  display: flex;
+  gap: clamp(16px, 3vw, 32px);
+  animation: carouselDrift var(--drift-duration, 40s) linear infinite;
+  width: max-content;
+  padding: 1vh 0;
+}
+
+#carousel-track:hover {
+  animation-play-state: paused;
+}
+
+@keyframes carouselDrift {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* === CARDS === */
+.zen-card {
+  flex-shrink: 0;
+  width: clamp(220px, 28vw, 320px);
+  padding: clamp(20px, 3vw, 32px);
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  position: relative;
+  overflow: hidden;
+}
+
+.zen-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: linear-gradient(135deg, rgba(255,255,255,0.02) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.zen-card.visible {
+  animation: cardFloat var(--float-duration, 6s) ease-in-out infinite;
+  animation-delay: var(--float-delay, 0s);
+}
+
+.zen-card:hover {
+  border-color: var(--incense-dim);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+@keyframes cardFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(calc(var(--float-range, -6px))); }
+}
+
+.card-content {
+  font-family: var(--font-cn);
+  font-size: clamp(0.85rem, 1.8vmin, 1.05rem);
+  font-weight: 300;
+  line-height: 1.8;
+  color: rgba(255, 255, 255, var(--card-opacity, 0.6));
+  min-height: 3em;
+  display: flex;
+  align-items: center;
+}
+
+.card-content.en {
+  font-family: var(--font-en);
+  font-style: italic;
+  font-weight: 300;
+  font-size: clamp(0.9rem, 1.9vmin, 1.1rem);
+  line-height: 1.7;
+}
+
+.card-source {
+  margin-top: 12px;
+  font-family: var(--font-en);
+  font-size: clamp(0.65rem, 1.2vmin, 0.8rem);
+  font-weight: 300;
+  font-style: italic;
+  color: var(--incense-dim);
+  text-align: right;
+}
+
+/* Card variations */
+.zen-card.variant-a { --card-opacity: 0.55; --float-range: -4px; }
+.zen-card.variant-b { --card-opacity: 0.7; --float-range: -8px; }
+.zen-card.variant-c { --card-opacity: 0.5; --float-range: -5px; }
+.zen-card.variant-d { --card-opacity: 0.65; --float-range: -7px; }
+
+.zen-card.size-sm { width: clamp(180px, 22vw, 260px); padding: clamp(16px, 2.5vw, 24px); }
+.zen-card.size-lg { width: clamp(260px, 32vw, 380px); padding: clamp(24px, 3.5vw, 36px); }
+
+/* Staggered entrance */
+.zen-card {
+  opacity: 0;
+  transform: translateY(15px);
+  transition: opacity 1.2s ease-out, transform 1.2s ease-out;
+  transition-delay: var(--entrance-delay, 0s);
+}
+
+.zen-card.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* === CONTROLS (bottom) === */
+#controls {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: clamp(12px, 3vw, 24px);
+  padding: clamp(12px, 2vh, 20px) clamp(16px, 4vw, 32px);
+  background: linear-gradient(to top, rgba(10, 10, 12, 0.9) 0%, transparent 100%);
+  z-index: 10;
+  opacity: 0;
+  animation: controlsFade 2s ease-out 3.5s forwards;
+}
+
+@keyframes controlsFade {
+  0% { opacity: 0; transform: translateY(10px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+/* Toggle switch */
+.toggle-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.toggle-label {
+  font-family: var(--font-cn);
+  font-size: clamp(0.65rem, 1.3vmin, 0.8rem);
+  font-weight: 300;
+  color: var(--smoke-text);
+  cursor: pointer;
+  user-select: none;
+}
+
+.toggle-switch {
+  position: relative;
+  width: 40px;
+  height: 22px;
+  background: var(--mist);
+  border: 1px solid var(--glass-border);
+  border-radius: 11px;
+  cursor: pointer;
+  transition: all 0.4s ease;
+  flex-shrink: 0;
+}
+
+.toggle-switch.active {
+  background: var(--incense-dim);
+  border-color: var(--incense);
+}
+
+.toggle-switch::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 50%;
+  transition: transform 0.4s ease;
+}
+
+.toggle-switch.active::after {
+  transform: translateX(18px);
+  background: var(--incense);
+}
+
+/* Interval selector */
+.interval-selector {
+  display: flex;
+  gap: 4px;
+  opacity: 0.4;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+}
+
+.interval-selector.enabled {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.interval-btn {
+  font-family: var(--font-en);
+  font-size: clamp(0.85rem, 1.8vmin, 1rem);
+  padding: 8px 16px;
+  background: transparent;
+  border: 1px solid var(--glass-border);
+  border-radius: 8px;
+  color: var(--smoke-text);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.interval-btn:hover {
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.interval-btn.active {
+  background: var(--incense-glow);
+  border-color: var(--incense-dim);
+  color: var(--incense);
+}
+
+/* Settings gear */
+#settings-btn {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1px solid var(--glass-border);
+  border-radius: 8px;
+  color: var(--smoke-text);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+#settings-btn:hover {
+  border-color: var(--incense-dim);
+  color: var(--incense);
+}
+
+/* === SETTINGS MODAL === */
+#settings-overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(5, 5, 7, 0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 100;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+#settings-overlay.visible {
+  display: flex;
+  opacity: 1;
+}
+
+#settings-modal {
+  width: min(420px, 90vw);
+  max-height: 88vh;
+  overflow-y: auto;
+  background: rgba(20, 20, 25, 0.95);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  padding: clamp(24px, 4vw, 36px);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  transform: translateY(20px);
+  transition: transform 0.4s ease;
+}
+
+#settings-overlay.visible #settings-modal {
+  transform: translateY(0);
+}
+
+.modal-title {
+  font-family: var(--font-cn);
+  font-size: 1rem;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 24px;
+  letter-spacing: 0.15em;
+}
+
+.setting-group {
+  margin-bottom: 20px;
+}
+
+.setting-label {
+  font-family: var(--font-cn);
+  font-size: 0.8rem;
+  font-weight: 300;
+  color: var(--smoke-text);
+  margin-bottom: 8px;
+  display: block;
+}
+
+.setting-notice {
+  font-family: var(--font-en);
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.25);
+  font-style: italic;
+  margin-top: 6px;
+}
+
+#api-key-input, #base-url-input, #model-input {
+  width: 100%;
+  padding: 10px 14px;
+  background: var(--smoke-faint);
+  border: 1px solid var(--glass-border);
+  border-radius: 10px;
+  color: rgba(255, 255, 255, 0.7);
+  font-family: var(--font-en);
+  font-size: 0.8rem;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+#api-key-input::placeholder, #base-url-input::placeholder, #model-input::placeholder {
+  color: rgba(255, 255, 255, 0.2);
+}
+
+#api-key-input:focus, #base-url-input:focus, #model-input:focus {
+  border-color: var(--incense-dim);
+}
+
+.modal-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 24px;
+}
+
+.modal-btn {
+  flex: 1;
+  padding: 10px 0;
+  border-radius: 10px;
+  font-family: var(--font-cn);
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 1px solid var(--glass-border);
+  background: transparent;
+  color: var(--smoke-text);
+}
+
+.modal-btn.primary {
+  background: var(--incense-glow);
+  border-color: var(--incense-dim);
+  color: var(--incense);
+}
+
+.modal-btn:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.modal-btn.primary:hover {
+  background: rgba(201, 168, 76, 0.15);
+}
+
+/* Status indicator */
+#llm-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  font-size: 0.7rem;
+  color: var(--smoke-text);
+  font-family: var(--font-en);
+}
+
+#llm-status .dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+}
+
+#llm-status.connected .dot {
+  background: #5a8a5a;
+  box-shadow: 0 0 6px rgba(90, 138, 90, 0.4);
+}
+
+/* === PROMPT LIBRARY === */
+.prompt-lib-section {
+  border-top: 1px solid var(--glass-border);
+  padding-top: 16px;
+  margin-top: 4px;
+}
+
+.prompt-count-text {
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.3);
+  font-family: var(--font-en);
+  font-style: italic;
+  margin-bottom: 10px;
+}
+
+.prompt-action-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.prompt-btn {
+  flex: 1;
+  padding: 8px 6px;
+  border-radius: 8px;
+  font-family: var(--font-cn);
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 1px solid var(--glass-border);
+  background: transparent;
+  color: var(--smoke-text);
+}
+
+.prompt-btn.accent {
+  background: var(--incense-glow);
+  border-color: var(--incense-dim);
+  color: var(--incense);
+}
+
+.prompt-btn:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.prompt-btn.accent:hover {
+  background: rgba(201, 168, 76, 0.15);
+}
+
+.prompt-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.generate-status {
+  font-size: 0.7rem;
+  color: var(--incense);
+  font-family: var(--font-en);
+  font-style: italic;
+  min-height: 16px;
+}
+
+/* Manage prompts overlay */
+#manage-overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(5, 5, 7, 0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 150;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+#manage-overlay.visible {
+  display: flex;
+  opacity: 1;
+}
+
+#manage-panel {
+  width: min(500px, 92vw);
+  max-height: 82vh;
+  background: rgba(20, 20, 25, 0.97);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  padding: clamp(20px, 4vw, 32px);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  display: flex;
+  flex-direction: column;
+  transform: translateY(20px);
+  transition: transform 0.4s ease;
+}
+
+#manage-overlay.visible #manage-panel {
+  transform: translateY(0);
+}
+
+.manage-stats {
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.3);
+  font-family: var(--font-en);
+  font-style: italic;
+  margin-bottom: 14px;
+  flex-shrink: 0;
+}
+
+.manage-tabs {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid var(--glass-border);
+  margin-bottom: 12px;
+  flex-shrink: 0;
+}
+
+.manage-tab {
+  padding: 6px 16px;
+  font-size: 0.78rem;
+  color: var(--smoke-text);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-cn);
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  transition: color 0.2s, border-color 0.2s;
+}
+
+.manage-tab.active {
+  color: var(--incense);
+  border-bottom-color: var(--incense);
+}
+
+#prompts-list-container {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 80px;
+  margin-bottom: 14px;
+}
+
+.prompt-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.prompt-item:last-child {
+  border-bottom: none;
+}
+
+.prompt-item-text {
+  flex: 1;
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.5);
+  font-family: var(--font-cn);
+  line-height: 1.6;
+  white-space: pre-line;
+}
+
+.prompt-item-badge {
+  font-size: 0.6rem;
+  padding: 2px 6px;
+  border-radius: 4px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.prompt-item-badge.default {
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.25);
+}
+
+.prompt-item-badge.custom {
+  background: var(--incense-glow);
+  color: var(--incense);
+}
+
+.prompt-delete-btn {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.18);
+  cursor: pointer;
+  font-size: 0.85rem;
+  padding: 2px 4px;
+  flex-shrink: 0;
+  transition: color 0.2s;
+  line-height: 1;
+}
+
+.prompt-delete-btn:hover {
+  color: rgba(255, 80, 80, 0.65);
+}
+
+.manage-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  flex-shrink: 0;
+}
+
+.manage-actions .prompt-btn {
+  flex: none;
+  padding: 8px 14px;
+}
+
+/* Notification toast */
+#notification-toast {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-100px);
+  background: rgba(20, 20, 25, 0.95);
+  border: 1px solid var(--glass-border);
+  border-radius: 14px;
+  padding: 16px 24px;
+  max-width: min(400px, 85vw);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  z-index: 200;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  font-family: var(--font-cn);
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+#notification-toast.show {
+  transform: translateX(-50%) translateY(0);
+}
+
+/* === RESPONSIVE === */
+@media (max-width: 600px) {
+  #buddha-svg {
+    width: clamp(80px, 25vmin, 130px);
+  }
+
+  .zen-card {
+    width: clamp(180px, 65vw, 280px) !important;
+    padding: 18px !important;
+  }
+
+  .zen-card.size-sm { width: clamp(160px, 55vw, 240px) !important; }
+  .zen-card.size-lg { width: clamp(200px, 70vw, 300px) !important; }
+
+  #controls {
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 10px 16px;
+  }
+
+  .interval-btn {
+    padding: 6px 10px;
+    font-size: 0.75rem;
+  }
+}
+
+@media (min-width: 1400px) {
+  .zen-card {
+    width: clamp(280px, 20vw, 360px);
+  }
+}
+
+/* Smooth show/hide for overlay */
+#settings-overlay {
+  display: flex;
+  visibility: hidden;
+  opacity: 0;
+}
+
+#settings-overlay.visible {
+  visibility: visible;
+  opacity: 1;
+}
+
+/* === MINDFULNESS OVERLAY === */
+#mindfulness-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(5, 5, 7, 0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 300;
+  transition: opacity 0.6s ease;
+}
+
+#mindfulness-overlay.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+#mindfulness-card {
+  max-width: 600px;
+  width: min(600px, 88vw);
+  background: rgba(20, 20, 26, 0.88);
+  border: 1px solid rgba(201, 168, 76, 0.2);
+  border-radius: 20px;
+  padding: 40px 44px;
+  text-align: center;
+  font-size: 1.3rem;
+  line-height: 2;
+  color: rgba(255, 255, 255, 0.82);
+  font-family: var(--font-cn);
+  box-shadow:
+    0 0 60px rgba(201, 168, 76, 0.08),
+    0 30px 80px rgba(0, 0, 0, 0.6);
+  transform: scale(0.94);
+  transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+#mindfulness-overlay.visible #mindfulness-card {
+  transform: scale(1);
+}
+
+#mindfulness-content em {
+  font-style: normal;
+  color: var(--incense);
+  font-size: 1.05rem;
+  letter-spacing: 0.05em;
+}
+
+#mindfulness-close {
+  margin-top: 28px;
+  padding: 10px 32px;
+  background: transparent;
+  border: 1px solid var(--incense-dim);
+  border-radius: 40px;
+  color: var(--incense);
+  font-family: var(--font-cn);
+  font-size: 0.9rem;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  transition: background 0.3s ease, border-color 0.3s ease;
+}
+
+#mindfulness-close:hover {
+  background: var(--incense-glow);
+  border-color: var(--incense);
+}
+</style>
+</head>
+<body>
+
+<div id="zen-room">
+  <!-- BUDDHA VISUAL -->
+  <div id="buddha-container">
+    <div class="incense-wisp"></div>
+    <div class="incense-wisp"></div>
+    <div class="incense-wisp"></div>
+    <svg id="buddha-svg" viewBox="0 0 200 280" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="aura" cx="50%" cy="45%" r="50%">
+          <stop offset="0%" stop-color="rgba(201,168,76,0.15)"/>
+          <stop offset="100%" stop-color="transparent"/>
+        </radialGradient>
+        <linearGradient id="bodyGrad" x1="50%" y1="0%" x2="50%" y2="100%">
+          <stop offset="0%" stop-color="rgba(201,168,76,0.25)"/>
+          <stop offset="50%" stop-color="rgba(180,160,100,0.15)"/>
+          <stop offset="100%" stop-color="rgba(160,140,80,0.05)"/>
+        </linearGradient>
+        <filter id="softGlow">
+          <feGaussianBlur stdDeviation="3" result="blur"/>
+          <feMerge>
+            <feMergeNode in="blur"/>
+            <feMergeNode in="SourceGraphic"/>
+          </feMerge>
+        </filter>
+      </defs>
+      <!-- Aura circle -->
+      <circle cx="100" cy="100" r="90" fill="url(#aura)" opacity="0.5"/>
+      <!-- Head -->
+      <ellipse cx="100" cy="68" rx="32" ry="38" fill="url(#bodyGrad)" filter="url(#softGlow)"/>
+      <!-- Ushnisha (top knot) -->
+      <ellipse cx="100" cy="33" rx="16" ry="14" fill="rgba(201,168,76,0.12)"/>
+      <!-- Ears -->
+      <ellipse cx="66" cy="72" rx="6" ry="14" fill="rgba(201,168,76,0.1)"/>
+      <ellipse cx="134" cy="72" rx="6" ry="14" fill="rgba(201,168,76,0.1)"/>
+      <!-- Eyes (closed, meditative) -->
+      <path d="M 82 65 Q 88 62 94 65" stroke="rgba(201,168,76,0.3)" stroke-width="1" fill="none"/>
+      <path d="M 106 65 Q 112 62 118 65" stroke="rgba(201,168,76,0.3)" stroke-width="1" fill="none"/>
+      <!-- Slight smile -->
+      <path d="M 90 80 Q 100 86 110 80" stroke="rgba(201,168,76,0.15)" stroke-width="0.8" fill="none"/>
+      <!-- Neck -->
+      <rect x="90" y="104" width="20" height="12" rx="4" fill="rgba(201,168,76,0.1)"/>
+      <!-- Body (meditation pose) -->
+      <path d="M 55 200 Q 55 130 80 118 Q 100 110 120 118 Q 145 130 145 200 Z"
+            fill="url(#bodyGrad)" filter="url(#softGlow)"/>
+      <!-- Crossed legs -->
+      <ellipse cx="100" cy="210" rx="55" ry="20" fill="rgba(201,168,76,0.08)"/>
+      <!-- Hands (dhyana mudra) -->
+      <ellipse cx="100" cy="180" rx="22" ry="12" fill="rgba(201,168,76,0.1)"/>
+      <!-- Lotus base -->
+      <path d="M 40 230 Q 60 220 100 218 Q 140 220 160 230 Q 140 240 100 242 Q 60 240 40 230 Z"
+            fill="rgba(201,168,76,0.06)"/>
+      <!-- Lotus petals (subtle) -->
+      <path d="M 50 232 Q 65 222 80 232" stroke="rgba(201,168,76,0.08)" stroke-width="0.5" fill="none"/>
+      <path d="M 75 232 Q 90 222 105 232" stroke="rgba(201,168,76,0.08)" stroke-width="0.5" fill="none"/>
+      <path d="M 100 232 Q 115 222 130 232" stroke="rgba(201,168,76,0.08)" stroke-width="0.5" fill="none"/>
+      <path d="M 125 232 Q 140 222 155 232" stroke="rgba(201,168,76,0.08)" stroke-width="0.5" fill="none"/>
+    </svg>
+    <div id="zen-title">觉 察 · 转 念 · 布 施</div>
+  </div>
+
+  <!-- CAROUSEL -->
+  <div id="carousel-area">
+    <div id="carousel-track"></div>
+  </div>
+</div>
+
+<!-- CONTROLS -->
+<div id="controls">
+  <div class="toggle-group">
+    <span class="toggle-label">开启提醒</span>
+    <div class="toggle-switch" id="reminder-toggle" role="switch" aria-checked="false" tabindex="0"></div>
+  </div>
+  <div class="interval-selector" id="interval-selector">
+    <button class="interval-btn" data-minutes="1">1m</button>
+    <button class="interval-btn" data-minutes="15">15m</button>
+    <button class="interval-btn active" data-minutes="30">30m</button>
+    <button class="interval-btn" data-minutes="45">45m</button>
+    <button class="interval-btn" data-minutes="60">60m</button>
+  </div>
+  <button id="settings-btn" title="设置" aria-label="Settings">⚙</button>
+</div>
+
+<!-- SETTINGS MODAL -->
+<div id="settings-overlay">
+  <div id="settings-modal">
+    <div class="modal-title">设 置</div>
+    <div class="setting-group">
+      <label class="setting-label">API Provider</label>
+      <select id="api-provider-select" style="width: 100%; padding: 8px; background: var(--mist); border: 1px solid var(--glass-border); border-radius: 6px; color: var(--smoke-text); font-family: var(--font-en); font-size: 0.85rem;">
+        <option value="anthropic">Anthropic (Claude)</option>
+        <option value="openai">OpenAI (GPT)</option>
+        <option value="google">Google (Gemini)</option>
+        <option value="ollama">Ollama (Local)</option>
+        <optgroup label="── 国内大模型 ──">
+          <option value="zhipu">智谱 GLM (ZhipuAI)</option>
+          <option value="deepseek">DeepSeek (深度求索)</option>
+          <option value="qwen">阿里通义千问 (Qwen)</option>
+          <option value="ernie">百度文心一言 (Ernie)</option>
+          <option value="kimi">月之暗面 Kimi (Moonshot)</option>
+          <option value="minimax">MiniMax</option>
+          <option value="doubao">字节豆包 (Doubao)</option>
+        </optgroup>
+      </select>
+      <div style="margin-top: 12px;">
+        <label class="setting-label">Base URL (optional)</label>
+        <input type="text" id="base-url-input" placeholder="https://open.bigmodel.cn/api/paas/v4" autocomplete="off">
+        <div class="setting-notice" style="margin-top: 4px;">Default endpoints used if empty. Check your provider dashboard for correct URL.</div>
+      </div>
+      <div style="margin-top: 12px;">
+        <label class="setting-label">Model (optional)</label>
+        <input type="text" id="model-input" placeholder="glm-4-flash" autocomplete="off">
+        <div class="setting-notice" style="margin-top: 4px;">Default model used if empty</div>
+        <div id="zhipu-model-hint" class="setting-notice" style="margin-top: 4px; display: none; color: var(--incense);">💡 推荐：glm-4-flash（快速）或 glm-4（均衡）。z.ai 用户请在控制台确认模型名称。</div>
+        <div id="zhipu-glm5-warning" class="setting-notice" style="margin-top: 4px; display: none; color: var(--incense);">💡 GLM-5 会显示推理过程。已自动增加 token 限制以获得完整输出。</div>
+      </div>
+      <div style="margin-top: 12px;">
+        <label class="setting-label">API Key / URL</label>
+        <input type="password" id="api-key-input" placeholder="API key or http://localhost:11434" autocomplete="off">
+      </div>
+      <div class="setting-notice">Your API key is stored locally in your browser only.</div>
+      <div id="llm-status">
+        <span class="dot"></span>
+        <span id="llm-status-text">未连接 · 使用本地提示库</span>
+      </div>
+    </div>
+    <!-- Prompt Library Section -->
+    <div class="setting-group prompt-lib-section">
+      <label class="setting-label">提示词库</label>
+      <div id="prompt-count-text" class="prompt-count-text">加载中...</div>
+      <div class="prompt-action-row">
+        <button class="prompt-btn accent" id="generate-prompts-btn">✨ 生成新提示词</button>
+        <button class="prompt-btn" id="manage-prompts-btn">📋 管理</button>
+      </div>
+      <div id="generate-status" class="generate-status"></div>
+    </div>
+
+    <div class="modal-actions">
+      <button class="modal-btn" id="modal-cancel">取消</button>
+      <button class="modal-btn" id="modal-clear">清除密钥</button>
+      <button class="modal-btn primary" id="modal-save">保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- MANAGE PROMPTS OVERLAY -->
+<div id="manage-overlay">
+  <div id="manage-panel">
+    <div class="modal-title">提示词管理</div>
+    <div id="manage-stats" class="manage-stats"></div>
+    <div class="manage-tabs">
+      <button class="manage-tab active" data-tab="custom">自定义</button>
+      <button class="manage-tab" data-tab="all">全部</button>
+    </div>
+    <div id="prompts-list-container">
+      <div id="prompts-list"></div>
+    </div>
+    <div class="manage-actions">
+      <button class="prompt-btn" id="export-prompts-btn">⬇ 导出</button>
+      <button class="prompt-btn" id="import-prompts-btn">⬆ 导入</button>
+      <input type="file" id="import-file-input" accept=".json" style="display:none">
+      <button class="prompt-btn" id="reset-prompts-btn">↺ 重置</button>
+      <button class="prompt-btn accent" id="manage-close-btn">关闭</button>
+    </div>
+  </div>
+</div>
+
+<!-- MINDFULNESS OVERLAY -->
+<div id="mindfulness-overlay">
+  <div id="mindfulness-card">
+    <div id="mindfulness-content"></div>
+    <button id="mindfulness-close">关闭</button>
+  </div>
+</div>
+
+<!-- NOTIFICATION TOAST (in-app fallback) -->
+<div id="notification-toast"></div>
+
+<script>
+// ============================================================
+// BUDA · 禅房 — Core Logic
+// ============================================================
+
+// === CARD DATA ===
+const cards = [
+  { content: '色即是空，空即是色', source: '— 心经' },
+  { content: '应无所住而生其心', source: '— 金刚经' },
+  { content: 'Observe your thoughts like clouds passing', source: '' },
+  { content: '呼吸，觉察，放下', source: '' },
+  { content: 'What you resist, persists.\nWhat you observe, dissolves.', source: '' },
+  { content: '此刻，你在想什么？', source: '' },
+  { content: '一切有为法，如梦幻泡影', source: '— 金刚经' },
+];
+
+// === PROMPTS POOL (loaded from data/prompts.json + localStorage) ===
+let defaultPrompts = [];  // loaded async from data/prompts.json
+
+function getCustomPrompts() {
+  try {
+    const stored = localStorage.getItem('buda-custom-prompts');
+    return stored ? JSON.parse(stored) : [];
+  } catch { return []; }
+}
+
+function saveCustomPrompts(arr) {
+  localStorage.setItem('buda-custom-prompts', JSON.stringify(arr));
+}
+
+function getAllPrompts() {
+  return [...defaultPrompts, ...getCustomPrompts()];
+}
+
+async function loadDefaultPrompts() {
+  try {
+    const res = await fetch('data/prompts.json');
+    if (res.ok) {
+      const data = await res.json();
+      // Support both plain array and {prompts: [...]} object formats
+      defaultPrompts = Array.isArray(data) ? data : (data.prompts || []);
+    }
+  } catch (e) {
+    console.warn('[Buda] Could not load data/prompts.json:', e.message);
+  }
+  initPromptPool();
+  updatePromptCountDisplay();
+}
+
+function updatePromptCountDisplay() {
+  const el = document.getElementById('prompt-count-text');
+  if (!el) return;
+  const d = defaultPrompts.length;
+  const c = getCustomPrompts().length;
+  el.textContent = `${d} 个默认 + ${c} 个自定义 = 共 ${d + c} 条`;
+}
+
+// === CAROUSEL SETUP ===
+function initCarousel() {
+  const track = document.getElementById('carousel-track');
+  const variants = ['variant-a', 'variant-b', 'variant-c', 'variant-d'];
+  const sizes = ['', '', 'size-sm', '', 'size-lg', '', 'size-sm'];
+
+  // Duplicate cards for seamless loop
+  const allCards = [...cards, ...cards];
+
+  allCards.forEach((card, i) => {
+    const el = document.createElement('div');
+    const origIndex = i % cards.length;
+    el.className = `zen-card ${variants[origIndex % variants.length]} ${sizes[origIndex] || ''}`.trim();
+    el.style.setProperty('--float-duration', (5 + Math.random() * 4) + 's');
+    el.style.setProperty('--float-delay', (Math.random() * -6) + 's');
+    el.style.setProperty('--entrance-delay', (1.5 + i * 0.15) + 's');
+
+    const contentText = card.content.replace(/\n/g, '<br>');
+    const isEn = /^[A-Z]/.test(card.content);
+    el.innerHTML = `
+      <div class="card-content${isEn ? ' en' : ''}">${contentText}</div>
+      ${card.source ? `<div class="card-source">${card.source}</div>` : ''}
+    `;
+    track.appendChild(el);
+  });
+
+  // Set drift speed — meditative pace
+  const totalCards = allCards.length;
+  track.style.setProperty('--drift-duration', (totalCards * 6) + 's');
+
+  // Trigger staggered entrance
+  requestAnimationFrame(() => {
+    track.querySelectorAll('.zen-card').forEach(card => card.classList.add('visible'));
+  });
+}
+
+// === FLOATING PARTICLES (subtle bokeh) ===
+function initParticles() {
+  const canvas = document.createElement('canvas');
+  canvas.id = 'particles';
+  canvas.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;opacity:0.4;';
+  document.body.prepend(canvas);
+
+  const ctx = canvas.getContext('2d');
+  let w, h;
+  const particles = [];
+  const COUNT = 15;
+
+  function resize() {
+    w = canvas.width = window.innerWidth;
+    h = canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  for (let i = 0; i < COUNT; i++) {
+    particles.push({
+      x: Math.random() * w,
+      y: Math.random() * h,
+      r: 1 + Math.random() * 2.5,
+      dx: (Math.random() - 0.5) * 0.15,
+      dy: (Math.random() - 0.5) * 0.1 - 0.05,
+      opacity: 0.03 + Math.random() * 0.06,
+      phase: Math.random() * Math.PI * 2,
+    });
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, w, h);
+    const t = Date.now() * 0.001;
+
+    particles.forEach(p => {
+      p.x += p.dx;
+      p.y += p.dy;
+
+      if (p.x < -10) p.x = w + 10;
+      if (p.x > w + 10) p.x = -10;
+      if (p.y < -10) p.y = h + 10;
+      if (p.y > h + 10) p.y = -10;
+
+      const flicker = Math.sin(t + p.phase) * 0.3 + 0.7;
+      const a = p.opacity * flicker;
+
+      ctx.beginPath();
+      const grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 4);
+      grad.addColorStop(0, `rgba(201, 168, 76, ${a})`);
+      grad.addColorStop(1, 'transparent');
+      ctx.fillStyle = grad;
+      ctx.arc(p.x, p.y, p.r * 4, 0, Math.PI * 2);
+      ctx.fill();
+    });
+
+    requestAnimationFrame(draw);
+  }
+  draw();
+}
+
+// === REMINDER SYSTEM ===
+let reminderInterval = null;
+let reminderEnabled = false;
+let selectedMinutes = 30;
+let activeNotification = null;
+let lastNotificationText = '';
+let promptIndex = 0;
+
+function shuffleArray(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+let shuffledPrompts = [];
+
+function initPromptPool() {
+  shuffledPrompts = shuffleArray(getAllPrompts());
+  promptIndex = 0;
+}
+
+function getNextPrompt() {
+  const all = getAllPrompts();
+  if (!all.length) return '🧘 觉察时刻\n此刻，你的心在哪里？\n💡 深呼吸三次，回到当下\n_应无所住而生其心_';
+  if (!shuffledPrompts.length || promptIndex >= shuffledPrompts.length) {
+    shuffledPrompts = shuffleArray(all);
+    promptIndex = 0;
+  }
+  return shuffledPrompts[promptIndex++];
+}
+
+async function sendNotification(text) {
+  console.log('[Buda] Sending notification at:', new Date().toLocaleTimeString());
+  console.log('[Buda] Notification permission:', 'Notification' in window ? Notification.permission : 'API not available');
+
+  lastNotificationText = text;
+
+  // Clean text for notification (remove markdown-like formatting)
+  const cleanText = text.replace(/_([^_]+)_/g, '$1').replace(/\n/g, ' · ');
+
+  if (!('Notification' in window)) {
+    console.warn('[Buda] Web Notifications API not available in this browser.');
+  } else if (Notification.permission === 'granted') {
+    try {
+      activeNotification = new Notification('🧘 觉察时刻', {
+        body: cleanText,
+        icon: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y="80" font-size="80">🧘</text></svg>',
+        silent: false,
+      });
+      activeNotification.onclick = function() {
+        this.close();
+        window.focus();
+        showMindfulnessCard(lastNotificationText);
+      };
+      console.log('[Buda] System notification sent.');
+    } catch (err) {
+      console.error('[Buda] Failed to create notification:', err);
+    }
+  } else {
+    console.warn('[Buda] Notification permission is "' + Notification.permission + '" — system notification blocked. Only in-app toast will show.');
+  }
+
+  // Always show in-app toast as fallback
+  showToast(text);
+}
+
+function showToast(text) {
+  const toast = document.getElementById('notification-toast');
+  toast.innerHTML = text.replace(/\n/g, '<br>').replace(/_([^_]+)_/g, '<em style="color:var(--incense-dim)">$1</em>');
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 8000);
+}
+
+function showMindfulnessCard(text) {
+  const overlay = document.getElementById('mindfulness-overlay');
+  const content = document.getElementById('mindfulness-content');
+  const html = text.replace(/\n/g, '<br>').replace(/_([^_]+)_/g, '<em>$1</em>');
+  content.innerHTML = html;
+  overlay.classList.add('visible');
+  setTimeout(() => overlay.classList.remove('visible'), 15000);
+}
+
+const defaultModels = {
+  anthropic: 'claude-sonnet-4-20250514',
+  openai: 'gpt-4o-mini',
+  google: 'gemini-2.0-flash',
+  ollama: 'llama3.2',
+  zhipu: 'glm-4-flash', // glm-4-flash is fast; glm-5 (reasoning model) is also supported
+  deepseek: 'deepseek-chat',
+  qwen: 'qwen-turbo',
+  ernie: 'ernie-4.0-8k',
+  kimi: 'moonshot-v1-8k',
+  minimax: 'abab6.5-chat',
+  doubao: 'doubao-pro-4k'
+};
+
+async function getLLMPrompt() {
+  const apiKey = localStorage.getItem('buda-api-key');
+  const provider = localStorage.getItem('buda-api-provider') || 'anthropic';
+  const customBaseUrl = localStorage.getItem('buda-base-url') || '';
+  const model = localStorage.getItem('buda-model') || defaultModels[provider] || 'default-model';
+
+  if (!apiKey) return getNextPrompt();
+
+  try {
+    let response;
+    const userPrompt = '请给我一条觉察提醒。';
+    const chineseSystemPrompt = `你是 Max 的修行助手。Max 正在学习心经和金刚经，修行觉察-转念-布施。
+
+**重要：直接返回最终结果，不要显示思考过程，不要列出步骤，不要分析。**
+
+规则：
+1. 随机选择风格：经典引导 / 现代正念 / 禅宗公案 / 身体觉察
+2. 严格格式（无markdown，纯文本）：
+🧘 觉察时刻
+[1-2句引导，30字以内]
+💡 [实用技巧，20字以内]
+_[金句，15字以内]_
+3. 总长度不超过80字
+4. 实用，能立即在座位上实践
+5. 中文为主
+6. 语气温和但有力
+7. 不要说教，不要长篇大论
+
+直接返回结果，不要任何前言或解释。`;
+    const isGlm5Model = model.toLowerCase().includes('glm-5');
+
+    // For GLM-5 reasoning models, use a prompt that explicitly instructs output after analysis
+    const glm5SystemPrompt = `你是 Max 的修行助手。
+
+**推理完成后，只输出最终格式化结果：**
+
+🧘 觉察时刻
+[1-2句引导，30字以内]
+💡 [实用技巧，20字以内]
+_[金句，15字以内]_
+
+**不要输出分析过程，不要输出草稿。**
+**直接返回这3行格式化结果。**
+
+总长度不超过80字。`;
+
+    const systemPrompt = isGlm5Model ? glm5SystemPrompt : chineseSystemPrompt;
+
+    // Generate a random fallback mindfulness prompt.
+    function generateFallbackPrompt() {
+      const fallbacks = [
+        '🧘 觉察时刻\n此刻，你的心在哪里？\n💡 深呼吸三次，回到当下\n_应无所住而生其心_',
+        '🧘 觉察时刻\n观察此刻的念头，不评判\n💡 不评判，只是看见\n_念起即觉，觉即不随_',
+        '🧘 觉察时刻\n你的肩膀放松了吗？\n💡 轻轻放下双肩，松开颈部\n_身心不二_',
+        '🧘 觉察时刻\n此刻，觉察你的呼吸与当下。\n💡 深吸一口气，慢慢呼出\n_当下即是归处_',
+        '🧘 觉察时刻\n停下来，感受脚踩地的重量\n💡 五感归位，回到这一刻\n_只管打坐_'
+      ];
+      return fallbacks[Math.floor(Math.random() * fallbacks.length)];
+    }
+
+    // Validate that text has the required mindfulness format.
+    function validateMindfulnessFormat(text) {
+      return text.includes('🧘') && text.includes('💡') &&
+        /_(.*?)_/.test(text);
+    }
+
+    // Extract the LAST formatted mindfulness block from reasoning_content.
+    // Works backwards so partial/cut-off reasoning still yields the best attempt.
+    function extractFromReasoning(text) {
+      const lines = text.split('\n');
+      let result = [];
+      let capturing = false;
+      let foundEmoji = false;
+
+      for (let i = lines.length - 1; i >= 0; i--) {
+        const line = lines[i].trim();
+
+        // Work backwards — grab last occurrence of the 🧘 header
+        if (line.includes('🧘') && !foundEmoji) {
+          foundEmoji = true;
+          capturing = true;
+        }
+
+        if (capturing) {
+          result.unshift(lines[i]);
+
+          // Stop once we have a block with all three markers
+          if (result.length >= 4 &&
+              result.some(l => l.includes('💡')) &&
+              result.some(l => { const t = l.trim(); return t.startsWith('_') && t.endsWith('_'); })) {
+            break;
+          }
+        }
+      }
+
+      if (result.length > 0 && foundEmoji) {
+        const extracted = cleanMindfulnessText(result.join('\n').trim());
+        if (validateMindfulnessFormat(extracted)) {
+          console.log('[Buda] extractFromReasoning: found valid block.');
+          return extracted;
+        }
+      }
+
+      // No complete formatted block — use random fallback
+      console.warn('[Buda] extractFromReasoning: no valid block found, using fallback.');
+      return generateFallbackPrompt();
+    }
+
+    function cleanMindfulnessText(text) {
+      let cleaned = text
+        .replace(/\*\*([^*]+)\*\*/g, '$1')  // Remove **bold** but keep content
+        .replace(/\*([^*]+)\*/g, '$1')       // Remove *italic* but keep content
+        .replace(/^#{1,6}\s+/gm, '')         // Remove ## headers
+        .replace(/^[-*]\s+/gm, '')           // Remove list markers
+        .replace(/^\d+\.\s+/gm, '')          // Remove numbered lists
+        .trim();
+      if (cleaned.length > 200) {
+        cleaned = cleaned.substring(0, 150) + '...';
+        console.warn('[Buda] Response truncated to 150 chars');
+      }
+      return cleaned;
+    }
+
+    if (provider === 'anthropic') {
+      const anthropicBase = customBaseUrl || 'https://api.anthropic.com';
+      response = await fetch(`${anthropicBase}/v1/messages`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': apiKey,
+          'anthropic-version': '2023-06-01',
+          'anthropic-dangerous-direct-browser-access': 'true',
+        },
+        body: JSON.stringify({
+          model: model,
+          max_tokens: 500,
+          messages: [{ role: 'user', content: userPrompt }],
+          system: systemPrompt
+        })
+      });
+      const data = await response.json();
+      return data.content[0].text;
+      
+    } else if (provider === 'openai') {
+      const openaiBase = customBaseUrl || 'https://api.openai.com/v1';
+      response = await fetch(`${openaiBase}/chat/completions`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${apiKey}`,
+        },
+        body: JSON.stringify({
+          model: model,
+          max_tokens: 500,
+          messages: [
+            { role: 'system', content: systemPrompt },
+            { role: 'user', content: userPrompt }
+          ]
+        })
+      });
+      const data = await response.json();
+      return data.choices[0].message.content;
+      
+    } else if (provider === 'google') {
+      const googleBase = customBaseUrl || 'https://generativelanguage.googleapis.com';
+      response = await fetch(`${googleBase}/v1beta/models/${model}:generateContent?key=${apiKey}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: `${systemPrompt}\n\n${userPrompt}` }] }],
+          generationConfig: { maxOutputTokens: 200 }
+        })
+      });
+      const data = await response.json();
+      return data.candidates[0].content.parts[0].text;
+      
+    } else if (provider === 'ollama') {
+      const ollamaUrl = customBaseUrl || (apiKey.startsWith('http') ? apiKey : 'http://localhost:11434');
+      response = await fetch(`${ollamaUrl}/api/generate`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: model,
+          prompt: `${systemPrompt}\n\n${userPrompt}`,
+          stream: false
+        })
+      });
+      const data = await response.json();
+      return data.response;
+
+    // === 国内大模型 ===
+
+    } else if (provider === 'zhipu') {
+      // 智谱 GLM — OpenAI-compatible endpoint
+      const zhipuBase = customBaseUrl || 'https://open.bigmodel.cn/api/paas/v4';
+      const url = `${zhipuBase}/chat/completions`;
+      // GLM-5 needs more tokens: ~300 for reasoning/analysis + ~100 for formatted output
+      const maxTokens = isGlm5Model ? 800 : 200;
+      const requestBody = {
+        model: model,
+        max_tokens: maxTokens,
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: userPrompt }
+        ]
+      };
+      console.log('[Zhipu] Using model:', model);
+      console.log('[Zhipu] Endpoint:', url);
+      console.log('[Zhipu] Request body:', JSON.stringify(requestBody, null, 2));
+      response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${apiKey}`,
+        },
+        body: JSON.stringify(requestBody)
+      });
+      const data = await response.json();
+      console.log('[Zhipu] Response status:', response.status, 'Data:', JSON.stringify(data));
+      if (!response.ok) {
+        if (response.status === 400 && (data.error?.message || data.msg || '').toLowerCase().includes('model')) {
+          console.error('[Zhipu] Model not recognized. Your model:', model);
+          console.error('[Zhipu] Check your z.ai dashboard for correct model names');
+          throw new Error(`⚠️ Model not recognized. Please check model name in settings. (used: "${model}")`);
+        }
+        throw new Error(`Zhipu API ${response.status}: ${data.error?.message || data.msg || JSON.stringify(data)}`);
+      }
+      console.log('[Zhipu] Full response:', JSON.stringify(data));
+      const zhipuMessage = data.choices[0].message;
+      const finishReason = data.choices[0].finish_reason;
+      let zhipuText = zhipuMessage.content || '';
+
+      // GLM-5 is a reasoning model — content may be empty while reasoning_content has the work.
+      // Also handle finish_reason: length — reasoning may be cut off but a formatted block
+      // might still be present; extractFromReasoning searches backwards for the last valid block.
+      if (!zhipuText && zhipuMessage.reasoning_content) {
+        console.warn('[Zhipu] GLM-5 reasoning model: extracting from reasoning_content.');
+        if (finishReason === 'length') {
+          console.warn('[Zhipu] Response cut off (finish_reason: length) — attempting backward extraction.');
+        }
+        zhipuText = extractFromReasoning(zhipuMessage.reasoning_content);
+      } else if (zhipuText && finishReason === 'length') {
+        // Content present but may be cut off — validate and fall back if invalid
+        console.warn('[Zhipu] finish_reason: length — validating content.');
+        const cleaned = cleanMindfulnessText(zhipuText);
+        zhipuText = validateMindfulnessFormat(cleaned) ? cleaned : generateFallbackPrompt();
+      }
+
+      if (!zhipuText) {
+        throw new Error('⚠️ Provider returned empty response. Try increasing max_tokens or using a different model.');
+      }
+
+      const finalText = cleanMindfulnessText(zhipuText);
+      if (!validateMindfulnessFormat(finalText)) {
+        console.warn('[Zhipu] Output failed format validation, using fallback.');
+        return generateFallbackPrompt();
+      }
+      return finalText;
+
+    } else if (provider === 'deepseek') {
+      // DeepSeek — OpenAI-compatible endpoint
+      const deepseekBase = customBaseUrl || 'https://api.deepseek.com';
+      response = await fetch(`${deepseekBase}/chat/completions`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${apiKey}`,
+        },
+        body: JSON.stringify({
+          model: model,
+          max_tokens: 200,
+          messages: [
+            { role: 'system', content: systemPrompt },
+            { role: 'user', content: userPrompt }
+          ]
+        })
+      });
+      const data = await response.json();
+      // Prefer content over reasoning_content — R1 verbose thinking lives in reasoning_content
+      const deepseekMessage = data.choices[0].message;
+      const deepseekText = deepseekMessage.content || '';
+      if (!deepseekText) {
+        throw new Error('⚠️ Provider returned empty response. Try increasing max_tokens or using a different model.');
+      }
+      return cleanMindfulnessText(deepseekText);
+
+    } else if (provider === 'qwen') {
+      // 阿里通义千问 — DashScope format
+      const qwenUrl = customBaseUrl || 'https://dashscope.aliyuncs.com/api/v1/services/aigc/text-generation/generation';
+      response = await fetch(qwenUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${apiKey}`,
+        },
+        body: JSON.stringify({
+          model: model,
+          input: {
+            messages: [
+              { role: 'system', content: systemPrompt },
+              { role: 'user', content: userPrompt }
+            ]
+          },
+          parameters: { max_tokens: 200 }
+        })
+      });
+      const data = await response.json();
+      return cleanMindfulnessText(data.output.text);
+
+    } else if (provider === 'ernie') {
+      // 百度文心一言 — OpenAI-compatible endpoint (access_token as Bearer)
+      const ernieBase = customBaseUrl || 'https://aip.baidubce.com/rpc/2.0/ai_custom/v1/wenxinworkshop/chat';
+      response = await fetch(`${ernieBase}/completions`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${apiKey}`,
+        },
+        body: JSON.stringify({
+          model: model,
+          max_tokens: 200,
+          messages: [
+            { role: 'system', content: systemPrompt },
+            { role: 'user', content: userPrompt }
+          ]
+        })
+      });
+      const data = await response.json();
+      return cleanMindfulnessText(data.choices[0].message.content);
+
+    } else if (provider === 'kimi') {
+      // 月之暗面 Kimi — OpenAI-compatible endpoint
+      const kimiBase = customBaseUrl || 'https://api.moonshot.cn/v1';
+      response = await fetch(`${kimiBase}/chat/completions`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${apiKey}`,
+        },
+        body: JSON.stringify({
+          model: model,
+          max_tokens: 200,
+          messages: [
+            { role: 'system', content: systemPrompt },
+            { role: 'user', content: userPrompt }
+          ]
+        })
+      });
+      const data = await response.json();
+      return cleanMindfulnessText(data.choices[0].message.content);
+
+    } else if (provider === 'minimax') {
+      // MiniMax — OpenAI-compatible endpoint
+      const minimaxBase = customBaseUrl || 'https://api.minimax.chat/v1';
+      response = await fetch(`${minimaxBase}/chat/completions`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${apiKey}`,
+        },
+        body: JSON.stringify({
+          model: model,
+          max_tokens: 200,
+          messages: [
+            { role: 'system', content: systemPrompt },
+            { role: 'user', content: userPrompt }
+          ]
+        })
+      });
+      const data = await response.json();
+      return cleanMindfulnessText(data.choices[0].message.content);
+
+    } else if (provider === 'doubao') {
+      // 字节豆包 — OpenAI-compatible; apiKey format: "key|endpoint-id"
+      // Store as "sk-xxx|ep-xxxxxxx-xxxxx" in the API key field
+      const [doubaoKey, doubaoModel] = apiKey.includes('|') ? apiKey.split('|') : [apiKey, model];
+      const doubaoBase = customBaseUrl || 'https://ark.cn-beijing.volces.com/api/v3';
+      response = await fetch(`${doubaoBase}/chat/completions`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${doubaoKey}`,
+        },
+        body: JSON.stringify({
+          model: doubaoModel.trim(),
+          max_tokens: 200,
+          messages: [
+            { role: 'system', content: systemPrompt },
+            { role: 'user', content: userPrompt }
+          ]
+        })
+      });
+      const data = await response.json();
+      return cleanMindfulnessText(data.choices[0].message.content);
+    }
+    
+  } catch (e) {
+    console.warn('LLM fallback to local prompts:', e.message);
+    if (e.message && e.message.includes('Model not recognized')) {
+      showToast('⚠️ Model not recognized. Please check model name in settings.');
+    }
+    return getNextPrompt();
+  }
+}
+
+async function testLLMConnection() {
+  const statusText = document.getElementById('llm-status-text');
+  const statusEl = document.getElementById('llm-status');
+
+  statusText.textContent = '🔄 Testing connection...';
+
+  try {
+    const result = await getLLMPrompt();
+    if (result) {
+      statusEl.classList.add('connected');
+      statusText.textContent = '✓ Connected & tested';
+      console.log('[Buda] LLM test successful:', result.substring(0, 100) + '...');
+      showToast('✓ LLM connection successful!\n\n' + result.substring(0, 150));
+    }
+  } catch (error) {
+    statusEl.classList.remove('connected');
+    statusText.textContent = '✗ Connection failed';
+    console.error('[Buda] LLM test failed:', error);
+  }
+}
+
+async function triggerReminder() {
+  const text = await getLLMPrompt();
+  sendNotification(text);
+}
+
+function startReminders() {
+  stopReminders();
+  const ms = selectedMinutes * 60 * 1000;
+  reminderInterval = setInterval(triggerReminder, ms);
+}
+
+function stopReminders() {
+  if (reminderInterval) {
+    clearInterval(reminderInterval);
+    reminderInterval = null;
+  }
+}
+
+// === TOGGLE & CONTROLS ===
+function initControls() {
+  const toggle = document.getElementById('reminder-toggle');
+  const intervalSel = document.getElementById('interval-selector');
+  const intervalBtns = document.querySelectorAll('.interval-btn');
+
+  // Log initial permission state on load
+  if ('Notification' in window) {
+    console.log('[Buda] Initial notification permission:', Notification.permission);
+  } else {
+    console.warn('[Buda] Web Notifications not supported.');
+  }
+
+  toggle.addEventListener('click', async () => {
+    reminderEnabled = !reminderEnabled;
+    console.log('[Buda] Toggle clicked, reminders now:', reminderEnabled ? 'ON' : 'OFF');
+    toggle.classList.toggle('active', reminderEnabled);
+    toggle.setAttribute('aria-checked', reminderEnabled);
+    intervalSel.classList.toggle('enabled', reminderEnabled);
+
+    if (reminderEnabled) {
+      // Request permission if not yet decided
+      if ('Notification' in window) {
+        if (Notification.permission === 'default') {
+          console.log('[Buda] Requesting notification permission...');
+          const perm = await Notification.requestPermission();
+          console.log('[Buda] Permission result:', perm);
+        } else if (Notification.permission === 'denied') {
+          console.warn('[Buda] Notification permission is DENIED. System notifications will not appear.');
+          console.warn('[Buda] To fix: go to browser Site Settings and allow notifications for this page.');
+          showToast('⚠️ 系统通知已被拒绝\n请在浏览器设置中允许此页面发送通知\nIn-app reminders will still work.');
+        } else {
+          console.log('[Buda] Notification permission already granted.');
+        }
+      }
+
+      startReminders();
+
+      // Send an immediate test notification so the user can verify it works
+      console.log('[Buda] Sending test notification immediately...');
+      setTimeout(triggerReminder, 500);
+    } else {
+      stopReminders();
+      console.log('[Buda] Reminders stopped.');
+    }
+  });
+
+  // Keyboard support
+  toggle.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      toggle.click();
+    }
+  });
+
+  intervalBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      intervalBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      selectedMinutes = parseInt(btn.dataset.minutes);
+      if (reminderEnabled) startReminders();
+    });
+  });
+}
+
+// === PROMPT MANAGEMENT ===
+let currentManageTab = 'custom';
+
+function renderPromptsList(tab) {
+  const list = document.getElementById('prompts-list');
+  if (!list) return;
+  const custom = getCustomPrompts();
+  const toShow = tab === 'custom' ? custom : getAllPrompts();
+
+  if (toShow.length === 0) {
+    list.innerHTML = '<div style="text-align:center;padding:24px 0;color:rgba(255,255,255,0.2);font-size:0.78rem;line-height:2;">' +
+      (tab === 'custom' ? '暂无自定义提示词<br>点击「✨ 生成新提示词」开始' : '提示词库为空') + '</div>';
+    return;
+  }
+
+  const customSet = new Set(custom);
+  list.innerHTML = '';
+  toShow.forEach((prompt) => {
+    const isCustom = customSet.has(prompt);
+    const item = document.createElement('div');
+    item.className = 'prompt-item';
+
+    const text = document.createElement('div');
+    text.className = 'prompt-item-text';
+    text.textContent = prompt.split('\n').slice(0, 3).join('\n');
+
+    const badge = document.createElement('span');
+    badge.className = `prompt-item-badge ${isCustom ? 'custom' : 'default'}`;
+    badge.textContent = isCustom ? '自定义' : '默认';
+
+    item.appendChild(text);
+    item.appendChild(badge);
+
+    if (isCustom) {
+      const del = document.createElement('button');
+      del.className = 'prompt-delete-btn';
+      del.textContent = '✕';
+      del.title = '删除';
+      del.addEventListener('click', () => {
+        const updated = getCustomPrompts().filter(p => p !== prompt);
+        saveCustomPrompts(updated);
+        initPromptPool();
+        updatePromptCountDisplay();
+        updateManageStats();
+        renderPromptsList(currentManageTab);
+      });
+      item.appendChild(del);
+    }
+
+    list.appendChild(item);
+  });
+}
+
+function updateManageStats() {
+  const el = document.getElementById('manage-stats');
+  if (!el) return;
+  const d = defaultPrompts.length;
+  const c = getCustomPrompts().length;
+  el.textContent = `${d} 个默认 · ${c} 个自定义 · 共 ${d + c} 条`;
+}
+
+function exportPromptsToJSON() {
+  const custom = getCustomPrompts();
+  if (!custom.length) { showToast('暂无自定义提示词可导出'); return; }
+  const blob = new Blob([JSON.stringify(custom, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `buda-prompts-${new Date().toISOString().slice(0, 10)}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function importPromptsFromJSON(file) {
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      const imported = JSON.parse(e.target.result);
+      if (!Array.isArray(imported)) throw new Error('Expected array');
+      const valid = imported.filter(p => typeof p === 'string' && p.includes('🧘'));
+      const existing = getCustomPrompts();
+      const merged = [...existing, ...valid.filter(p => !existing.includes(p))];
+      saveCustomPrompts(merged);
+      initPromptPool();
+      updatePromptCountDisplay();
+      updateManageStats();
+      renderPromptsList(currentManageTab);
+      showToast(`✓ 导入了 ${valid.length} 条提示词`);
+    } catch {
+      showToast('导入失败：无效的 JSON 文件');
+    }
+  };
+  reader.readAsText(file);
+}
+
+function initPromptManagement() {
+  const generateBtn = document.getElementById('generate-prompts-btn');
+  const manageBtn = document.getElementById('manage-prompts-btn');
+  const manageOverlay = document.getElementById('manage-overlay');
+  const closeBtn = document.getElementById('manage-close-btn');
+  const exportBtn = document.getElementById('export-prompts-btn');
+  const importBtn = document.getElementById('import-prompts-btn');
+  const importInput = document.getElementById('import-file-input');
+  const resetBtn = document.getElementById('reset-prompts-btn');
+  const statusEl = document.getElementById('generate-status');
+  const tabs = document.querySelectorAll('.manage-tab');
+
+  generateBtn.addEventListener('click', async () => {
+    const apiKey = localStorage.getItem('buda-api-key');
+    if (!apiKey) {
+      statusEl.textContent = '⚠ 请先在设置中配置 API Key';
+      setTimeout(() => { statusEl.textContent = ''; }, 4000);
+      return;
+    }
+
+    const COUNT = 7;
+    generateBtn.disabled = true;
+    statusEl.textContent = `生成中... 0/${COUNT}`;
+
+    const results = [];
+    const existing = getAllPrompts();
+
+    for (let i = 0; i < COUNT; i++) {
+      statusEl.textContent = `生成中... ${i + 1}/${COUNT}`;
+      try {
+        const prompt = await getLLMPrompt();
+        // Deduplicate by comparing the main guidance line (line index 1)
+        const newKey = (prompt.split('\n')[1] || '').trim().slice(0, 14);
+        const isDup = newKey && [...existing, ...results].some(p => {
+          return (p.split('\n')[1] || '').trim().slice(0, 14) === newKey;
+        });
+        if (!isDup && prompt.includes('🧘') && prompt.includes('💡')) {
+          results.push(prompt);
+        }
+      } catch (e) {
+        console.warn('[Buda] generate error at', i, e);
+      }
+    }
+
+    generateBtn.disabled = false;
+
+    if (results.length > 0) {
+      const custom = getCustomPrompts();
+      saveCustomPrompts([...custom, ...results]);
+      initPromptPool();
+      updatePromptCountDisplay();
+      statusEl.textContent = `✓ 生成了 ${results.length} 条新提示词`;
+    } else {
+      statusEl.textContent = '⚠ 未生成新提示词，请检查 API 配置';
+    }
+    setTimeout(() => { statusEl.textContent = ''; }, 5000);
+  });
+
+  manageBtn.addEventListener('click', () => {
+    updateManageStats();
+    renderPromptsList(currentManageTab);
+    manageOverlay.classList.add('visible');
+  });
+
+  closeBtn.addEventListener('click', () => manageOverlay.classList.remove('visible'));
+
+  manageOverlay.addEventListener('click', (e) => {
+    if (e.target === manageOverlay) manageOverlay.classList.remove('visible');
+  });
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      currentManageTab = tab.dataset.tab;
+      renderPromptsList(currentManageTab);
+    });
+  });
+
+  exportBtn.addEventListener('click', exportPromptsToJSON);
+  importBtn.addEventListener('click', () => importInput.click());
+
+  importInput.addEventListener('change', (e) => {
+    if (e.target.files[0]) {
+      importPromptsFromJSON(e.target.files[0]);
+      e.target.value = '';
+    }
+  });
+
+  resetBtn.addEventListener('click', () => {
+    if (!confirm('确定要清除所有自定义提示词吗？')) return;
+    saveCustomPrompts([]);
+    initPromptPool();
+    updatePromptCountDisplay();
+    updateManageStats();
+    renderPromptsList(currentManageTab);
+    showToast('已重置为默认提示词库');
+  });
+}
+
+// === SETTINGS MODAL ===
+function initSettings() {
+  const overlay = document.getElementById('settings-overlay');
+  const settingsBtn = document.getElementById('settings-btn');
+  const cancelBtn = document.getElementById('modal-cancel');
+  const clearBtn = document.getElementById('modal-clear');
+  const saveBtn = document.getElementById('modal-save');
+  const input = document.getElementById('api-key-input');
+  const baseUrlInput = document.getElementById('base-url-input');
+  const modelInput = document.getElementById('model-input');
+  const providerSelect = document.getElementById('api-provider-select');
+  const statusEl = document.getElementById('llm-status');
+  const statusText = document.getElementById('llm-status-text');
+
+  const providerPlaceholders = {
+    'anthropic': 'https://api.anthropic.com',
+    'openai': 'https://api.openai.com/v1',
+    'google': 'https://generativelanguage.googleapis.com',
+    'ollama': 'http://localhost:11434',
+    'zhipu': 'https://open.bigmodel.cn/api/paas/v4',
+    'deepseek': 'https://api.deepseek.com',
+    'qwen': 'https://dashscope.aliyuncs.com/api/v1/services/aigc/text-generation/generation',
+    'ernie': 'https://aip.baidubce.com/rpc/2.0/ai_custom/v1/wenxinworkshop/chat',
+    'kimi': 'https://api.moonshot.cn/v1',
+    'minimax': 'https://api.minimax.chat/v1',
+    'doubao': 'https://ark.cn-beijing.volces.com/api/v3',
+  };
+
+  function updateZhipuHints() {
+    const provider = providerSelect.value;
+    const isZhipu = provider === 'zhipu';
+    const isGlm5 = isZhipu && modelInput.value.toLowerCase().includes('glm-5');
+    document.getElementById('zhipu-model-hint').style.display = isZhipu ? 'block' : 'none';
+    document.getElementById('zhipu-glm5-warning').style.display = isGlm5 ? 'block' : 'none';
+  }
+
+  providerSelect.addEventListener('change', () => {
+    const provider = providerSelect.value;
+    baseUrlInput.placeholder = providerPlaceholders[provider] || 'https://...';
+    modelInput.placeholder = provider === 'zhipu' ? 'glm-4-flash (推荐) 或 glm-4' : (defaultModels[provider] || 'default-model');
+    updateZhipuHints();
+  });
+
+  modelInput.addEventListener('input', updateZhipuHints);
+
+  function updateStatus() {
+    const key = localStorage.getItem('buda-api-key');
+    const provider = localStorage.getItem('buda-api-provider') || 'anthropic';
+    const providerNames = {
+      'anthropic': 'Claude Sonnet',
+      'openai': 'GPT-4o-mini',
+      'google': 'Gemini Flash',
+      'ollama': 'Llama 3.2 (Local)',
+      'zhipu': '智谱 GLM-4-Flash (recommended)',
+      'deepseek': 'DeepSeek Chat',
+      'qwen': '通义千问 Turbo',
+      'ernie': '文心一言 4.0',
+      'kimi': 'Kimi moonshot-v1-8k',
+      'minimax': 'MiniMax abab6.5',
+      'doubao': '豆包 Doubao',
+    };
+    
+    if (key) {
+      statusEl.classList.add('connected');
+      statusText.textContent = `✓ 已连接 · ${providerNames[provider]}`;
+    } else {
+      statusEl.classList.remove('connected');
+      statusText.textContent = '未连接 · 使用本地提示库';
+    }
+  }
+
+  settingsBtn.addEventListener('click', () => {
+    const key = localStorage.getItem('buda-api-key');
+    const provider = localStorage.getItem('buda-api-provider') || 'anthropic';
+    const baseUrl = localStorage.getItem('buda-base-url');
+    const savedModel = localStorage.getItem('buda-model');
+    input.value = key || '';
+    providerSelect.value = provider;
+    baseUrlInput.value = baseUrl || '';
+    baseUrlInput.placeholder = providerPlaceholders[provider] || 'https://...';
+    modelInput.value = savedModel || '';
+    modelInput.placeholder = provider === 'zhipu' ? 'glm-4-flash (推荐) 或 glm-4' : (defaultModels[provider] || 'default-model');
+    updateZhipuHints();
+    updateStatus();
+    updatePromptCountDisplay();
+    overlay.classList.add('visible');
+  });
+
+  function closeModal() {
+    overlay.classList.remove('visible');
+  }
+
+  cancelBtn.addEventListener('click', closeModal);
+
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) closeModal();
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeModal();
+  });
+
+  saveBtn.addEventListener('click', () => {
+    const val = input.value.trim();
+    const provider = providerSelect.value;
+    const baseUrl = baseUrlInput.value.trim();
+    const modelVal = modelInput.value.trim();
+    if (val) {
+      localStorage.setItem('buda-api-key', val);
+    }
+    localStorage.setItem('buda-api-provider', provider);
+    if (baseUrl) {
+      localStorage.setItem('buda-base-url', baseUrl);
+    } else {
+      localStorage.removeItem('buda-base-url');
+    }
+    if (modelVal) {
+      localStorage.setItem('buda-model', modelVal);
+    } else {
+      localStorage.removeItem('buda-model');
+    }
+    updateStatus();
+    closeModal();
+    testLLMConnection();
+  });
+
+  clearBtn.addEventListener('click', () => {
+    localStorage.removeItem('buda-api-key');
+    localStorage.removeItem('buda-api-provider');
+    localStorage.removeItem('buda-base-url');
+    localStorage.removeItem('buda-model');
+    input.value = '';
+    baseUrlInput.value = '';
+    modelInput.value = '';
+    providerSelect.value = 'anthropic';
+    baseUrlInput.placeholder = providerPlaceholders['anthropic'];
+    modelInput.placeholder = defaultModels['anthropic'];
+    updateStatus();
+  });
+
+  updateStatus();
+}
+
+// === INIT ===
+document.addEventListener('DOMContentLoaded', () => {
+  initParticles();
+  initCarousel();
+  initControls();
+  initSettings();
+  initPromptManagement();
+  loadDefaultPrompts();
+
+  document.getElementById('mindfulness-close').addEventListener('click', () => {
+    document.getElementById('mindfulness-overlay').classList.remove('visible');
+  });
+});
+</script>
+</body>
+</html>
